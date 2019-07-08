@@ -6,7 +6,8 @@
 科系：資訊管理學系 三年級  
 
 ## Resources
-[github](https://www.peculab.org/2019/07/03/108-%e5%85%a8%e5%9c%8b%e5%a4%8f%e5%ad%a3%e5%ad%b8%e9%99%a2%e5%ad%b8%e5%93%a1-github/)
+- 
+-
 
 
 ## Week 1
@@ -15,6 +16,8 @@
 -  Install R and RStudio
 -  Create an RMarkdown [[RMarkdown Example]](https://chanyayun.github.io/Data-Science-Programming/Week1/R/Example.html)
 ### At Home
+- R
+- Tidyverse
 
 
 ## Week 2
