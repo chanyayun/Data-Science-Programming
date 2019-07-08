@@ -3,14 +3,14 @@
 
 姓名：詹雅芸  
 學校：國立政治大學  
-科系：資訊管理學系 二年級  
+科系：資訊管理學系 三年級  
 
 ## Week 1
 ### Progress
 **In Class**
 1. Create a github repo for the class
 2. Install R and RStudio
-3. Create a RMarkdown
+3. Create a RMarkdown [[RMarkdown Example]](https://chanyayun.github.io/Data-Science-Programming/Week1/R/Example.html)
 
 **At Home**
 ### Resources
