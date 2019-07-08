@@ -7,18 +7,21 @@
 
 ## Week 1
 ### Progress
-* In Class
-* At Home  
-resource  
+**In Class**
+1. Create a github repo for the class
+2. Install R and RStudio
+3. Create a RMarkdown
+**At Home**
+### Resources
 [github](https://www.peculab.org/2019/07/03/108-%e5%85%a8%e5%9c%8b%e5%a4%8f%e5%ad%a3%e5%ad%b8%e9%99%a2%e5%ad%b8%e5%93%a1-github/)
 
 
 ## Week 2
-### Progress
-* In Class
-* At Home
+**In Class**
+**At Home**
+### Resources
 
 ## Week 3
-### Progress
-* In Class
-* At Home
+**In Class**
+**At Home**
+### Resources
