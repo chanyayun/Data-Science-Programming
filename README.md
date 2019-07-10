@@ -12,8 +12,7 @@
 -  Install R and RStudio
 -  Create an RMarkdown [[RMarkdown Example]](https://chanyayun.github.io/Data-Science-Programming/Week1/R/Example.html)
 ### At Home
-- R
-- Tidyverse
+
 
 
 ## Week 2
