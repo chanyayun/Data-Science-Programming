@@ -19,6 +19,7 @@
 -  **Resources:**
     -  [[R_Introduction]](http://www.r-tutor.com/r-introduction)
     -  [[R系列筆記]](https://rpubs.com/skydome20/Table)
+    -  [[R教學]](https://blog.gtwang.org/programming/r/) (unread)
 
 
 
