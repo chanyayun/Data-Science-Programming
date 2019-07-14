@@ -1,6 +1,6 @@
 ---
-title: "HW2: 各地區人口數與垃圾生產量的關係"
-author: "chanyayun"
+title: "HW1: 各地區人口數與垃圾生產量的關係"
+author: "詹雅芸"
 date: "2019/7/15"
 output: html_document
 ---
