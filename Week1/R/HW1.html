@@ -401,12 +401,13 @@ $(document).ready(function () {
 </blockquote>
 <pre class="r"><code>library(dplyr)
 library(readr)
+setwd(&quot;C:/Users/fqasd/git/repository/Data-Science-Programming&quot;)
 
-garbage_file &lt;- read.csv(&quot;garbage.csv&quot;)
-popularity_file &lt;- read_csv(&quot;popularity.csv&quot;)</code></pre>
+garbage_data &lt;- read.csv(&quot;garbage.csv&quot;)
+popularity_data &lt;- read_csv(&quot;popularity.csv&quot;)</code></pre>
 <blockquote>
 <ol start="2" style="list-style-type: decimal">
-<li>將popularity_file中包含“區”(如北部區域)、“省”(如福建省)的「地區」篩掉，並選擇「地區」與「年底人口數」</li>
+<li>將popularity_data中包含“區”(如北部區域)、“省”(如福建省)的「地區」篩掉，並選擇「地區」與「年底人口數」</li>
 </ol>
 </blockquote>
 <table>
@@ -530,12 +531,12 @@ popularity_file &lt;- read_csv(&quot;popularity.csv&quot;)</code></pre>
 </tr>
 </tbody>
 </table>
-<pre class="r"><code>p &lt;- data.frame(popularity_file) %&gt;%
+<pre class="r"><code>p &lt;- data.frame(popularity_data) %&gt;%
   filter(!grepl(&quot;區&quot;, `地區`), !grepl(&quot;省&quot;, `地區`)) %&gt;%
   select(`地區`, `年底人口數`)</code></pre>
 <blockquote>
 <ol start="3" style="list-style-type: decimal">
-<li>從garbage_file中選擇“county”(縣市)與“GarbageGenerated”(垃圾產生量)，並重新用中文命名欄位</li>
+<li>從garbage_data中選擇“county”(縣市)與“GarbageGenerated”(垃圾產生量)，並重新用中文命名欄位</li>
 </ol>
 </blockquote>
 <table>
@@ -607,10 +608,10 @@ popularity_file &lt;- read_csv(&quot;popularity.csv&quot;)</code></pre>
 </table>
 <blockquote>
 <blockquote>
-<p>為配合popularity_file的年底人口數，選擇最近期的年底(2017年11月)</p>
+<p>為配合popularity_data的年底人口數，選擇最近期的年底(2017年11月)</p>
 </blockquote>
 </blockquote>
-<pre class="r"><code>g &lt;- data.frame(garbage_file) %&gt;% 
+<pre class="r"><code>g &lt;- data.frame(garbage_data) %&gt;% 
   filter(year == &quot;106&quot;, month == &quot;11&quot;) %&gt;%
   select(county, GarbageGenerated) %&gt;%
   rename(
@@ -638,8 +639,7 @@ popularity_file &lt;- read_csv(&quot;popularity.csv&quot;)</code></pre>
 </ol>
 </blockquote>
 <pre class="r"><code>merged_data &lt;- merge(p, g, by = &quot;地區&quot;)
-#merged_data &lt;- merged_data[order(merged_data), ]
-#Error: unexpected input in &quot;merged_data &lt;- merged_data[order(merged_data$\&quot;</code></pre>
+merged_data &lt;- merged_data[order(merged_data$年底人口數), ]</code></pre>
 <blockquote>
 <blockquote>
 <p>加入新的欄位“單位垃圾生產量(kg/人)”</p>
@@ -658,16 +658,16 @@ popularity_file &lt;- read_csv(&quot;popularity.csv&quot;)</code></pre>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">宜蘭縣</td>
-<td align="center">456607</td>
-<td align="center">12643</td>
-<td align="center">27.68902</td>
+<td align="left">連江縣</td>
+<td align="center">12880</td>
+<td align="center">650</td>
+<td align="center">50.46584</td>
 </tr>
 <tr class="even">
-<td align="left">花蓮縣</td>
-<td align="center">329237</td>
-<td align="center">10167</td>
-<td align="center">30.88049</td>
+<td align="left">澎湖縣</td>
+<td align="center">104073</td>
+<td align="center">3195</td>
+<td align="center">30.69961</td>
 </tr>
 <tr class="odd">
 <td align="left">金門縣</td>
@@ -676,70 +676,10 @@ popularity_file &lt;- read_csv(&quot;popularity.csv&quot;)</code></pre>
 <td align="center">17.40193</td>
 </tr>
 <tr class="even">
-<td align="left">南投縣</td>
-<td align="center">501051</td>
-<td align="center">14553</td>
-<td align="center">29.04495</td>
-</tr>
-<tr class="odd">
-<td align="left">屏東縣</td>
-<td align="center">829939</td>
-<td align="center">26712</td>
-<td align="center">32.18550</td>
-</tr>
-<tr class="even">
-<td align="left">苗栗縣</td>
-<td align="center">553807</td>
-<td align="center">20951</td>
-<td align="center">37.83087</td>
-</tr>
-<tr class="odd">
-<td align="left">桃園市</td>
-<td align="center">2188017</td>
-<td align="center">75418</td>
-<td align="center">34.46865</td>
-</tr>
-<tr class="even">
-<td align="left">高雄市</td>
-<td align="center">2776912</td>
-<td align="center">83391</td>
-<td align="center">30.03012</td>
-</tr>
-<tr class="odd">
-<td align="left">基隆市</td>
-<td align="center">371458</td>
-<td align="center">14745</td>
-<td align="center">39.69493</td>
-</tr>
-<tr class="even">
-<td align="left">連江縣</td>
-<td align="center">12880</td>
-<td align="center">650</td>
-<td align="center">50.46584</td>
-</tr>
-<tr class="odd">
-<td align="left">雲林縣</td>
-<td align="center">690373</td>
-<td align="center">15835</td>
-<td align="center">22.93688</td>
-</tr>
-<tr class="even">
-<td align="left">新北市</td>
-<td align="center">3986689</td>
-<td align="center">155242</td>
-<td align="center">38.94008</td>
-</tr>
-<tr class="odd">
-<td align="left">新竹市</td>
-<td align="center">441132</td>
-<td align="center">15674</td>
-<td align="center">35.53131</td>
-</tr>
-<tr class="even">
-<td align="left">新竹縣</td>
-<td align="center">552169</td>
-<td align="center">14704</td>
-<td align="center">26.62953</td>
+<td align="left">臺東縣</td>
+<td align="center">219540</td>
+<td align="center">7227</td>
+<td align="center">32.91883</td>
 </tr>
 <tr class="odd">
 <td align="left">嘉義市</td>
@@ -748,34 +688,70 @@ popularity_file &lt;- read_csv(&quot;popularity.csv&quot;)</code></pre>
 <td align="center">40.21188</td>
 </tr>
 <tr class="even">
+<td align="left">花蓮縣</td>
+<td align="center">329237</td>
+<td align="center">10167</td>
+<td align="center">30.88049</td>
+</tr>
+<tr class="odd">
+<td align="left">基隆市</td>
+<td align="center">371458</td>
+<td align="center">14745</td>
+<td align="center">39.69493</td>
+</tr>
+<tr class="even">
+<td align="left">新竹市</td>
+<td align="center">441132</td>
+<td align="center">15674</td>
+<td align="center">35.53131</td>
+</tr>
+<tr class="odd">
+<td align="left">宜蘭縣</td>
+<td align="center">456607</td>
+<td align="center">12643</td>
+<td align="center">27.68902</td>
+</tr>
+<tr class="even">
+<td align="left">南投縣</td>
+<td align="center">501051</td>
+<td align="center">14553</td>
+<td align="center">29.04495</td>
+</tr>
+<tr class="odd">
 <td align="left">嘉義縣</td>
 <td align="center">511182</td>
 <td align="center">15218</td>
 <td align="center">29.77022</td>
 </tr>
+<tr class="even">
+<td align="left">新竹縣</td>
+<td align="center">552169</td>
+<td align="center">14704</td>
+<td align="center">26.62953</td>
+</tr>
 <tr class="odd">
+<td align="left">苗栗縣</td>
+<td align="center">553807</td>
+<td align="center">20951</td>
+<td align="center">37.83087</td>
+</tr>
+<tr class="even">
+<td align="left">雲林縣</td>
+<td align="center">690373</td>
+<td align="center">15835</td>
+<td align="center">22.93688</td>
+</tr>
+<tr class="odd">
+<td align="left">屏東縣</td>
+<td align="center">829939</td>
+<td align="center">26712</td>
+<td align="center">32.18550</td>
+</tr>
+<tr class="even">
 <td align="left">彰化縣</td>
 <td align="center">1282458</td>
 <td align="center">34810</td>
 <td align="center">27.14319</td>
-</tr>
-<tr class="even">
-<td align="left">臺中市</td>
-<td align="center">2787070</td>
-<td align="center">70623</td>
-<td align="center">25.33951</td>
-</tr>
-<tr class="odd">
-<td align="left">臺北市</td>
-<td align="center">2683257</td>
-<td align="center">59621</td>
-<td align="center">22.21964</td>
-</tr>
-<tr class="even">
-<td align="left">臺東縣</td>
-<td align="center">219540</td>
-<td align="center">7227</td>
-<td align="center">32.91883</td>
 </tr>
 <tr class="odd">
 <td align="left">臺南市</td>
@@ -784,10 +760,34 @@ popularity_file &lt;- read_csv(&quot;popularity.csv&quot;)</code></pre>
 <td align="center">31.15681</td>
 </tr>
 <tr class="even">
-<td align="left">澎湖縣</td>
-<td align="center">104073</td>
-<td align="center">3195</td>
-<td align="center">30.69961</td>
+<td align="left">桃園市</td>
+<td align="center">2188017</td>
+<td align="center">75418</td>
+<td align="center">34.46865</td>
+</tr>
+<tr class="odd">
+<td align="left">臺北市</td>
+<td align="center">2683257</td>
+<td align="center">59621</td>
+<td align="center">22.21964</td>
+</tr>
+<tr class="even">
+<td align="left">高雄市</td>
+<td align="center">2776912</td>
+<td align="center">83391</td>
+<td align="center">30.03012</td>
+</tr>
+<tr class="odd">
+<td align="left">臺中市</td>
+<td align="center">2787070</td>
+<td align="center">70623</td>
+<td align="center">25.33951</td>
+</tr>
+<tr class="even">
+<td align="left">新北市</td>
+<td align="center">3986689</td>
+<td align="center">155242</td>
+<td align="center">38.94008</td>
 </tr>
 </tbody>
 </table>

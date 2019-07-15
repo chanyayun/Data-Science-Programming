@@ -24,30 +24,31 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r results = "hide", message =FALSE,warning=FALSE}
 library(dplyr)
 library(readr)
+setwd("C:/Users/fqasd/git/repository/Data-Science-Programming")
 
-garbage_file <- read.csv("garbage.csv")
-popularity_file <- read_csv("popularity.csv")
+garbage_data <- read.csv("garbage.csv")
+popularity_data <- read_csv("popularity.csv")
 ```
->2. 將popularity_file中包含"區"(如北部區域)、"省"(如福建省)的「地區」篩掉，並選擇「地區」與「年底人口數」
+>2. 將popularity_data中包含"區"(如北部區域)、"省"(如福建省)的「地區」篩掉，並選擇「地區」與「年底人口數」
 ```{r echo = FALSE, results = 'asis'}
 library(knitr)
-kable(popularity_file[1:5, ], caption = "人口相關資料(前5筆)")
+kable(popularity_data[1:5, ], caption = "人口相關資料(前5筆)")
 ```
 
 ```{r}
-p <- data.frame(popularity_file) %>%
+p <- data.frame(popularity_data) %>%
   filter(!grepl("區", `地區`), !grepl("省", `地區`)) %>%
   select(`地區`, `年底人口數`)
 ```
->3. 從garbage_file中選擇"county"(縣市)與"GarbageGenerated"(垃圾產生量)，並重新用中文命名欄位
+>3. 從garbage_data中選擇"county"(縣市)與"GarbageGenerated"(垃圾產生量)，並重新用中文命名欄位
 ```{r echo = FALSE, results = 'asis'}
 library(knitr)
-kable(garbage_file[1:5, ], caption = "垃圾清理資料(前5筆)")
+kable(garbage_data[1:5, ], caption = "垃圾清理資料(前5筆)")
 ```
 
->>  為配合popularity_file的年底人口數，選擇最近期的年底(2017年11月)
+>>  為配合popularity_data的年底人口數，選擇最近期的年底(2017年11月)
 ```{r}
-g <- data.frame(garbage_file) %>% 
+g <- data.frame(garbage_data) %>% 
   filter(year == "106", month == "11") %>%
   select(county, GarbageGenerated) %>%
   rename(
@@ -67,8 +68,8 @@ g$`垃圾生產量(t)` <- as.numeric(gsub(",", "", g$`垃圾生產量(t)`))
 >5. 將選擇的資料合併，並依照人口數由小到大排序
 ```{r}
 merged_data <- merge(p, g, by = "地區")
-#merged_data <- merged_data[order(merged_data), ]
-#Error: unexpected input in "merged_data <- merged_data[order(merged_data$\"
+merged_data <- merged_data[order(merged_data$年底人口數), ]
+
 ```
 >> 加入新的欄位"單位垃圾生產量(kg/人)"
 ```{r}
