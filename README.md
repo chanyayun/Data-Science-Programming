@@ -13,7 +13,7 @@
 -  Create a github repo for the course
 -  Install R and RStudio
 -  Create an RMarkdown [[HW0: RMarkdown Example]](https://chanyayun.github.io/Data-Science-Programming/Week1/R/Example.html)
--  Tidy data using dplyr package [[HW1: 各地區人口數與垃圾生產量的關係]](https://chanyayun.github.io/Data-Science-Programming/Week1/HW1.html)
+-  Tidy data using dplyr package [[HW1]](https://chanyayun.github.io/Data-Science-Programming/Week1/R/HW1.html)
 ### At Home
 -  Familiarize R
 -  **Resources:**
@@ -25,6 +25,7 @@
 
 ## Week 2
 ### In class
+-  Data visualization with ggplot2
 
 ### At Home
 
