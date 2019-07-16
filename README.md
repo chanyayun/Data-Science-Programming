@@ -7,6 +7,7 @@
 學校：國立政治大學  
 科系：資訊管理學系 三年級  
 
+HW Examples by others: [[1]](https://graduatecrisis.github.io/CSX-Data-Science/wk3/hw3_ggplot/airbnb_ggplot.html) [[2]](https://qk0926.github.io/NTU_data_course_2018/week_3/hw_3/Data_Visualization) [[3]](https://b07901135.github.io/Data_Science_Programming/w1_thu/w1_thu_class.html)
 
 ## Week 1 
 ### In class 
