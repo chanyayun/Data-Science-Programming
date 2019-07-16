@@ -19,15 +19,13 @@ knitr::opts_chunk$set(echo = TRUE)
 * [垃圾清理量資料](https://data.gov.tw/dataset/89022)
 
 ## 步驟
-
 >1. 匯入dplyr並讀取資料
 ```{r results = "hide", message =FALSE,warning=FALSE}
 library(dplyr)
 library(readr)
-setwd("C:/Users/fqasd/git/repository/Data-Science-Programming")
 
-garbage_data <- read.csv("garbage.csv")
-popularity_data <- read_csv("popularity.csv")
+garbage_data <- read.csv("../../garbage.csv")
+popularity_data <- read_csv("../../popularity.csv")
 ```
 >2. 將popularity_data中包含"區"(如北部區域)、"省"(如福建省)的「地區」篩掉，並選擇「地區」與「年底人口數」
 ```{r echo = FALSE, results = 'asis'}
@@ -58,6 +56,7 @@ g <- data.frame(garbage_data) %>%
 ```
 >4. 檢查資料型態是否會影響後續操作  
 ```{r}
+getwd()
 str(g)
 ```
 >>  將「垃圾生產量」的資料型態改為numeric，以利之後的計算

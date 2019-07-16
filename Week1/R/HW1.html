@@ -401,10 +401,9 @@ $(document).ready(function () {
 </blockquote>
 <pre class="r"><code>library(dplyr)
 library(readr)
-setwd(&quot;C:/Users/fqasd/git/repository/Data-Science-Programming&quot;)
 
-garbage_data &lt;- read.csv(&quot;garbage.csv&quot;)
-popularity_data &lt;- read_csv(&quot;popularity.csv&quot;)</code></pre>
+garbage_data &lt;- read.csv(&quot;../../garbage.csv&quot;)
+popularity_data &lt;- read_csv(&quot;../../popularity.csv&quot;)</code></pre>
 <blockquote>
 <ol start="2" style="list-style-type: decimal">
 <li>將popularity_data中包含“區”(如北部區域)、“省”(如福建省)的「地區」篩掉，並選擇「地區」與「年底人口數」</li>
@@ -623,6 +622,8 @@ popularity_data &lt;- read_csv(&quot;popularity.csv&quot;)</code></pre>
 <li>檢查資料型態是否會影響後續操作</li>
 </ol>
 </blockquote>
+<pre class="r"><code>getwd()</code></pre>
+<pre><code>## [1] &quot;C:/Users/fqasd/git/repository/Data-Science-Programming/Week1/R&quot;</code></pre>
 <pre class="r"><code>str(g)</code></pre>
 <pre><code>## &#39;data.frame&#39;:    22 obs. of  2 variables:
 ##  $ 地區         : Factor w/ 22 levels &quot;宜蘭縣&quot;,&quot;花蓮縣&quot;,..: 10 3 15 13 9 22 2 20 5 16 ...
