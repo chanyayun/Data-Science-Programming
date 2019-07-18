@@ -25,54 +25,58 @@ library(dplyr)
 library(readr)
 
 garbage_data <- read.csv("../../garbage.csv")
-popularity_data <- read_csv("../../popularity.csv")
+population_data <- read_csv("../../population.csv")
 ```
 >2. 將popularity_data中包含"區"(如北部區域)、"省"(如福建省)的「地區」篩掉，並選擇「地區」與「年底人口數」
 ```{r echo = FALSE, results = 'asis'}
 library(knitr)
-kable(popularity_data[1:5, ], caption = "人口相關資料(前5筆)")
+kable(population_data[1:5, ], caption = "人口相關資料(前5筆)")
 ```
 
 ```{r}
-p <- data.frame(popularity_data) %>%
+p <- data.frame(population_data) %>%
   filter(!grepl("區", `地區`), !grepl("省", `地區`)) %>%
-  select(`地區`, `年底人口數`)
+  select(county = `地區`, p_total = `年底人口數`)
 ```
->3. 從garbage_data中選擇"county"(縣市)與"GarbageGenerated"(垃圾產生量)，並重新用中文命名欄位
+>3. 刪去不需要的資料，重新命名欄位，再修改資料型態以利後續操作
 ```{r echo = FALSE, results = 'asis'}
 library(knitr)
 kable(garbage_data[1:5, ], caption = "垃圾清理資料(前5筆)")
 ```
 
->>  為配合popularity_data的年底人口數，選擇最近期的年底(2017年11月)
+>>  為配合population_data的年底人口數，選擇最近期的年底(2017年11月)
 ```{r}
-g <- data.frame(garbage_data) %>% 
-  filter(year == "106", month == "11") %>%
-  select(county, GarbageGenerated) %>%
-  rename(
-    `地區` = county, 
-    `垃圾生產量(t)` = GarbageGenerated
-  )
-```
->4. 檢查資料型態是否會影響後續操作  
-```{r}
-getwd()
-str(g)
-```
->>  將「垃圾生產量」的資料型態改為numeric，以利之後的計算
-```{r}
-g$`垃圾生產量(t)` <- as.numeric(gsub(",", "", g$`垃圾生產量(t)`))
+#原本的欄位名稱用``還是有error, 所以用索引值表示
+g <- select(garbage_data, -c(1, 9),
+            time_period = 2,
+            county = 3, 
+            g_total = 4,
+            g_garbage =  5,
+            g_bulky = 6,
+            g_recycle = 7,
+            g_foodscrap = 8)
 
-```
->5. 將選擇的資料合併，並依照人口數由小到大排序
-```{r}
-merged_data <- merge(p, g, by = "地區")
-merged_data <- merged_data[order(merged_data$年底人口數), ]
+#改變資料型態(應該有更好的方法)
+g$g_total <- as.numeric(gsub(",", "", g$g_total))
+g$g_garbage <- as.numeric(gsub(",", "", g$g_garbage))
+g$g_bulky <- as.numeric(gsub(",", "", g$g_bulky))
+g$g_recycle <- as.numeric(gsub(",", "", g$g_recycle))
+g$g_foodscrap <- as.numeric(gsub(",", "", g$g_foodscrap))
 
+g_10612 <- filter(g, time_period == "106年 12月") %>%
+  select(-c(1))
+```
+>4. 將選擇的資料合併，並依照人口數由小到大排序
+```{r}
+#合併
+merged_data <- merge(p, g_10612, by = "county")
+
+#排序
+merged_data <- merged_data[order(merged_data$p_total), ]
 ```
 >> 加入新的欄位"單位垃圾生產量(kg/人)"
 ```{r}
-merged_data <- mutate(merged_data, `單位垃圾生產量(kg/人)` = (`垃圾生產量(t)`/年底人口數)*1000)
+merged_data <- mutate(merged_data, `g_percapita` = (g_total/p_total)*1000)
 ```
 
 ```{r echo = FALSE, results = 'asis'}
@@ -83,17 +87,18 @@ kable(merged_data, caption = "最終合併資料")
 ## 結論
 > 利用`plot()`簡單的呈現結果  
 ```{r echo = FALSE, results = 'asis'}
-plot(x = merged_data$`年底人口數`/1000, y = merged_data$`垃圾生產量(t)`,
-     xlab = "人口數(千人)", 
-     ylab = "垃圾生產量(公噸)",
-     main = "2017年11月各地區人口與垃圾生產量關係圖")
+plot(x = merged_data$p_total/1000, y = merged_data$g_total,
+     xlab = "人口數(千人)", ylab = "垃圾生產量(公噸)",
+     main = "2017年12月各地區人口與垃圾生產量關係圖")
+
 ```  
 
 > 由上圖可知，人口數與垃圾生產量有顯著的正相關，人口越多的地區會產生越多的垃圾。  但若考慮下圖人口數與單位垃圾生產量(公斤/人)的關係，可以得知，人口數少的地區所產生的垃圾量，就比例而言偏多。  
 > 註：為避免橫坐標數值出現科學記號，故將人口數以千人為單位表示
 ```{r echo = FALSE, results = 'asis'}
-plot(merged_data$`年底人口數`/1000, merged_data$`單位垃圾生產量(kg/人)`,
+plot(merged_data$p_total/1000, merged_data$g_percapita,
      xlab = "人口數(千人)",
      ylab = "單位垃圾生產量(公斤/人)",
-     main = "2017年11月各地區人口與單位垃圾生產量關係圖")
+     main = "2017年12月各地區人口與單位垃圾生產量關係圖")
+
 ```  
