@@ -18,7 +18,7 @@
 
 ## Week 2
 ### In class
--  Data visualization with ggplot2 [[HW2]](https://chanyayun.github.io/Data-Science-Programming/Week2/R/HW2.Rmd)
+-  Data visualization with ggplot2 [[HW2]](https://chanyayun.github.io/Data-Science-Programming/Week2/R/HW2.html)
 
 ### At Home
 
