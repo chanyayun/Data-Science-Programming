@@ -1,0 +1,130 @@
+---
+title: 'HW2: Data Visualization'
+author: "chanyayun"
+date: "2019/7/17"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### **目的** 
+建立各地區人口數與垃圾生產量的關係，並以圖表顯示結果。
+
+使用資料：
+
+* [執行機關一般廢棄物產生量](https://erdb.epa.gov.tw/DataRepository/Statistics/TrashClearExecutiveProduce.aspx?topic1=%E5%9C%B0&topic2=%E6%B1%A1%E6%9F%93%E9%98%B2%E6%B2%BB&subject=%E5%BB%A2%E6%A3%84%E7%89%A9)  
+* [1-1 土地面積、戶數、人口數、人口密度、年齡結構及扶養比例](https://data.gov.tw/dataset/6326)
+
+### Data Input
+```
+Import libraries and data files
+```
+```{r results = "hide", message =FALSE,warning=FALSE}
+library(dplyr)
+library(readr)
+library(ggplot2)
+library(ggrepel)
+
+garbage_data <- read.csv("../../garbage.csv")
+population_data <- read_csv("../../population.csv")
+
+str(garbage_data)
+str(population_data)
+```
+### Data Cleaning
+```
+刪去不需要的資料，重新命名欄位，再修改資料型態以利後續操作
+```
+```{r}
+#原本的欄位名稱用``還是有error, 所以用索引值表示
+g <- select(garbage_data, -c(1, 9),
+            time_period = 2,
+            county = 3, 
+            g_total = 4,
+            g_garbage =  5,
+            g_bulky = 6,
+            g_recycle = 7,
+            g_foodscrap = 8)
+
+#改變資料型態(應該有更好的方法)
+g$g_total <- as.numeric(gsub(",", "", g$g_total))
+g$g_garbage <- as.numeric(gsub(",", "", g$g_garbage))
+g$g_bulky <- as.numeric(gsub(",", "", g$g_bulky))
+g$g_recycle <- as.numeric(gsub(",", "", g$g_recycle))
+g$g_foodscrap <- as.numeric(gsub(",", "", g$g_foodscrap))
+```
+
+```{r echo = FALSE, results = 'asis'}
+library(knitr)
+
+g[21:30, ] %>%
+  kable(caption = "中間10筆資料，資料包含106整年與各月份")
+```
+
+```{r}
+#跟garbage_data一樣, 有特殊符號的欄位名稱用索引值表示(或我懶得打)
+p <- select(data.frame(population_data), -c(3, 7, 8, 9, 10),
+            year = 年,
+            county = `地區`, 
+            p_male = `年底人口數男性`,
+            p_female = `年底人口數女性`,
+            p_total = `年底人口數`,
+            p_under15 = 11,
+            pr_under15 = 12,
+            p_adult = 13,
+            pr_adult = 14,
+            p_over64 = 15,
+            pr_over64 = 16,
+            pr_dependency = 17) %>%
+  filter(!grepl("區", county), !grepl("省", county))
+```
+
+```{r echo = FALSE, results = 'asis'}
+library(knitr)
+kable(p[1:5, ], caption = "前5筆資料")
+```
+
+```
+整理好的資料g中，為配合popularity_data的年底人口數，選擇最近期的年底(2017年12月)
+```
+```{r}
+g_10612 <- filter(g, time_period == "106年 12月") %>%
+  select(-c(1))
+```
+
+```
+合併成新的資料集,按照地區人口數由小到大排序
+```
+```{r}
+#合併
+merged_data <- merge(p, g_10612, by = "county")
+
+#排序
+merged_data <- merged_data[order(merged_data$p_total), ]
+merged_data <- mutate(merged_data, `g_percapita` = (g_total/p_total)*1000)
+
+```
+### Graphs
+
+---
+#### Scatter Plot
+```
+由散佈圖表示各地區的總人口數與總垃圾生產量的關係
+```
+```{r}
+garbage_dist <- 
+  ggplot(data = merged_data, aes(x = p_total/1000, y = g_total, label = county)) +
+  geom_point(aes(color = county)) +
+  geom_text_repel(data = subset(merged_data, (p_total/1000 > 1000) | (p_total/1000 < 200))) +
+  labs(title = "2017年12月各地區人口與垃圾生產量關係圖", 
+       x = "年底人口數(千人)", y = "垃圾生產量(公噸)", color = "地區") + 
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+print(garbage_dist)
+```
+
+
+
