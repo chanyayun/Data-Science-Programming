@@ -13,16 +13,21 @@
 -  Install R and RStudio
 -  Create an RMarkdown [[HW0: RMarkdown Example]](https://chanyayun.github.io/Data-Science-Programming/Week1/R/Example.html)
 -  Tidy data using dplyr package [[HW1]](https://chanyayun.github.io/Data-Science-Programming/Week1/R/HW1.html)
-### At Home
--  Familiarize R
+
 
 ## Week 2
 ### In class
 -  Data visualization with ggplot2 [[HW2]](https://chanyayun.github.io/Data-Science-Programming/Week2/R/HW2.html)
 
-### At Home
 
 ## Week 3
 ### In class
+- Text mining [[HW3]]()
+- [Final Project]()
 
-### At Home
+### Problems Encountered
+- tm package [*](http://yphuang.github.io/blog/2016/03/04/text-mining-tm-package/)
+- corpus, vcorpus, pcorpus [*](https://stats.stackexchange.com/questions/164372/what-is-vectorsource-and-vcorpus-in-tm-text-mining-package-in-r) 
+- dirsource [*](https://www.rdocumentation.org/packages/tm/versions/0.7-6/topics/DirSource)
+- remove special characters [*](https://stackoverflow.com/questions/10294284/remove-all-special-characters-from-a-string-in-r)
+- bag of words [*](https://rpubs.com/williamsurles/316682)
