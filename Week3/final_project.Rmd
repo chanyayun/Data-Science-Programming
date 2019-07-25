@@ -1,0 +1,186 @@
+---
+title: "外媒眼中的台灣"
+author: "詹雅芸, 盧奕彣"
+date: "2019/7/25"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Import Library
+```{r results = "hide", message =FALSE,warning=FALSE}
+library(readr)
+library(dplyr)
+library(tidyr)
+library(tm)
+library(qdap)
+library(ggplot2)
+```
+
+## Import Data
+Data Source: [https://edition.cnn.com/](https://edition.cnn.com/)
+```
+利用selenium將搜尋2019年包含'taiwan'的新聞結果爬下來，全部串在一
+起輸出成"cnn_2019.txt"
+```
+```{r}
+data <- scan("data/cnn_2019.txt", what = character(), encoding = "UTF-8")
+```
+
+## Create VCorpus
+```{r}
+data_source <- VectorSource(data)
+```
+
+## Cleaning Corpus
+```{r}
+data_corpus <- VCorpus(data_source) %>%
+  tm_map(removeNumbers) %>%
+  tm_map(content_transformer(tolower)) %>%
+  tm_map(content_transformer(function(x) gsub("[[:punct:]]", " ", x))) %>% #remove punctuation
+  tm_map(stripWhitespace) %>%
+  tm_map(removeWords, c(stopwords("en"), "said", "says", "also", "new", "will", "year", "two", "can", "may"))
+```
+
+## Create a Text-Document Matrix
+```{r}
+cnn_tdm <- TermDocumentMatrix(data_corpus)
+cnn_m <- as.matrix(cnn_tdm)
+```
+```
+轉換成矩陣後，可以查看矩陣維度，並檢視矩陣內容
+```
+```{r}
+dim(cnn_m)
+cnn_m[50:60, 1:20]
+```
+
+## Term Frequency
+```
+利用rowSums()計算詞頻，再利用sort()由多至少排列
+```
+```{R}
+term_frequency <- rowSums(cnn_m)
+term_frequency <- sort(term_frequency, decreasing = T)
+```
+```
+列出前15個最高詞頻
+```
+```{R}
+term_frequency[1:15]
+```
+
+```
+利用ggplot2呈現詞頻
+```
+```{R}
+barplot(term_frequency[1:10], 
+        xlab = "Top 10 Words", 
+        ylab = "Frequency",
+        col = grey.colors(10), las = 2)
+```
+
+## Word Cloud
+```
+利用wordcloud()建立文字雲
+```
+```{R}
+cnn_freqs <- data.frame(term = names(term_frequency), 
+                        num = term_frequency)
+
+brown_bg <- brewer.pal(10, "BrBG")
+brown_bg <- brown_bg[-(5:6)]
+wordcloud::wordcloud(cnn_freqs$term, cnn_freqs$num,
+                     max.words = 500, colors = brown_bg)
+```
+
+## Word Association
+### "taiwan"
+```
+利用findAssocs()找出與特定單詞的相關程度，以"taiwan"為例
+```
+```{R}
+taiwan_association <- findAssocs(cnn_tdm, "taiwan", 0.1)
+
+associations_df <- list_vect2df(taiwan_association)[, 2:3]
+head(associations_df)
+```
+```
+根據出現的單詞，可以再往下找其他關連性，以"thirdparty"為例
+```
+```{R}
+thirdparty_association <- findAssocs(cnn_tdm, "taiwan", 0.1)
+
+associations_df <- list_vect2df(thirdparty_association)[, 2:3]
+head(associations_df)
+```
+利用ggplot2呈現
+```
+```{R}
+ggplot(associations_df, aes(y = associations_df[, 1])) + 
+  geom_point(aes(x = associations_df[, 2]), 
+             data = associations_df, size = 3) + 
+  ggtitle("Word Associations to 'thirdparty'") + 
+  theme_gdocs()
+```
+
+### "china"
+```
+以"china"為例，意外的沒有出現相關性特別高的字詞
+```
+```{R}
+china_association <- findAssocs(cnn_tdm, "chinas", 0.05)
+
+associations_df <- list_vect2df(taiwan_association)[, 2:3]
+head(associations_df, 20)
+```
+
+### "hong"
+```
+### 因為"hong kong"之間的空格，故以"hong"為例表示hongkong
+```
+```{R}
+hk_association <- findAssocs(cnn_tdm, "hong", 0.1)
+
+associations_df <- list_vect2df(hk_association)[, 2:3]
+head(associations_df)
+```
+```
+根據出現的單詞，可以再往下找其他關連性，以"persecute"為例
+```
+```{R}
+persecute_association <- findAssocs(cnn_tdm, "taiwan", 0.1)
+
+associations_df <- list_vect2df(persecute_association)[, 2:3]
+head(associations_df)
+```
+利用ggplot2呈現
+```
+```{R}
+ggplot(associations_df, aes(y = associations_df[, 1])) + 
+  geom_point(aes(x = associations_df[, 2]), 
+             data = associations_df, size = 3) + 
+  ggtitle("Word Associations to 'persecute'") + 
+  theme_gdocs()
+```
+
+## TF_IDF
+```
+利用Tf-Idf重新計算詞頻
+```
+```{R}
+tfidf_tdm <- TermDocumentMatrix(data_corpus, 
+                                control = list(weighting = weightTfIdf))
+tfidf_m <- as.matrix(tfidf_tdm)
+```
+```
+列出前30個最高詞頻
+```
+```{R}
+term_frequency <- rowSums(tfidf_m)
+term_frequency <- sort(term_frequency, decreasing = T)
+
+term_frequency[1:30]
+```
