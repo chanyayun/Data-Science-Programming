@@ -23,8 +23,8 @@
 ## Week 3
 ### In class
 - Text mining [[HW3]]()
-- [Final Project]()
-
+- [Final Project](https://chanyayun.github.io/Data-Science-Programming/Week3/final_project.html)
+unable to render html(cannot allocate vector of size)
 ### Problems Encountered
 - tm package [*](http://yphuang.github.io/blog/2016/03/04/text-mining-tm-package/)
 - corpus, vcorpus, pcorpus [*](https://stats.stackexchange.com/questions/164372/what-is-vectorsource-and-vcorpus-in-tm-text-mining-package-in-r) 
