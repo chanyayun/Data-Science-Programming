@@ -1,0 +1,108 @@
+---
+title: "HW3"
+author: "chanyayun"
+date: "2019/7/26"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Import packages
+```{r results = "hide", message =FALSE,warning=FALSE}
+library(readr)
+library(dplyr)
+library(tidyr)
+library(stringr)
+
+library(tm)
+library(qdap)
+library(wordcloud)
+```
+
+## Import data
+data source: https://www.aljazeera.com/Search/?q=taiwan  
+事先用爬蟲爬取2014至2019年以台灣為關鍵字搜尋的新聞報導
+```{r results = "hide", message =FALSE,warning=FALSE}
+data <-  read_csv("../../Week2/aljazeera2.csv")
+data <- na.omit(data)
+```
+```{r echo = FALSE, results = 'asis'}
+library(knitr)
+kable(data[1:1, ])
+```
+
+## Tidy data
+將data中相同年份的資料合併成在一起，並按年分存成.txt
+```{r}
+merged_data <- data %>% 
+  mutate(year=str_sub(date, -4, -1)) %>%
+  select(-date) %>%
+  unite("merged_text", c("title", "summary", "content")) %>%
+  group_by(year) %>%
+  summarise(all_text=paste0(merged_text, collapse = " "))
+```
+```{r}
+# better way?...(create folder)
+cat(merged_data$all_text[2], file = "../../Week2/aljazeera_data/text_2009.txt")
+cat(merged_data$all_text[3], file = "../../Week2/aljazeera_data/text_2010.txt")
+cat(merged_data$all_text[4], file = "../../Week2/aljazeera_data/text_2011.txt")
+cat(merged_data$all_text[5], file = "../../Week2/aljazeera_data/text_2012.txt")
+cat(merged_data$all_text[6], file = "../../Week2/aljazeera_data/text_2013.txt")
+cat(merged_data$all_text[7], file = "../../Week2/aljazeera_data/text_2014.txt")
+cat(merged_data$all_text[8], file = "../../Week2/aljazeera_data/text_2015.txt")
+cat(merged_data$all_text[9], file = "../../Week2/aljazeera_data/text_2016.txt")
+cat(merged_data$all_text[10], file = "../../Week2/aljazeera_data/text_2017.txt")
+cat(merged_data$all_text[11], file = "../../Week2/aljazeera_data/text_2018.txt")
+cat(merged_data$all_text[12], file = "../../Week2/aljazeera_data/text_2019.txt")
+```
+
+## Create corpus
+建立文本資料結構，並清洗文本
+```{r}
+aljazeera_corpus <- Corpus(DirSource("../../Week2/aljazeera_data", encoding = "UTF-8")) %>%
+  tm_map(removeNumbers) %>%
+  tm_map(content_transformer(tolower)) %>%
+  # tm_map(content_transformer(bracketX)) %>%
+  tm_map(content_transformer(function(x) gsub("http[[:alnum:]]*", " ", x))) %>% #remove url
+  tm_map(content_transformer(function(x) gsub("[[:punct:]]", " ", x))) %>% #remove punctuation
+  tm_map(stripWhitespace) %>%
+  tm_map(removeWords, c(stopwords("en"), "also", "said"))
+```
+
+## Transform to matrix
+```{r}
+aljazeera_tdm <- TermDocumentMatrix(aljazeera_corpus)
+aljazeera_m <- as.matrix(aljazeera_tdm)
+
+```
+檢視矩陣的維度
+```{r}
+dim(aljazeera_tdm)
+```
+
+## Smaller matrix
+將出現頻率低於10%的字詞移除，縮小矩陣的維度
+```{r}
+aljazeera_tdms <- removeSparseTerms(aljazeera_tdm, 0.1)
+dim(aljazeera_tdms)
+```
+
+## Top 10 Term Frequency
+```{r}
+freq_s <- rowSums(as.matrix(aljazeera_tdms))
+kable(head(sort(freq_s, decreasing = T), 10))
+```
+
+## Word Cloud
+```{r}
+freq <- rowSums(aljazeera_m)
+freq <- sort(freq, decreasing = T)
+
+RdYlBu <- brewer.pal(10, "RdYlBu")
+RdYlBu <- RdYlBu[-(5:7)]
+wordcloud(names(freq), freq, max.words = 100, 
+                     rot.per = 0.4, random.order=F, 
+                     colors = RdYlBu)
+```
