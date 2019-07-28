@@ -22,7 +22,7 @@
 
 ## Week 3
 ### In class
-- Text mining [[HW3]]()
+- Text mining [[HW3]](https://chanyayun.github.io/Data-Science-Programming/Week2/R/HW3.html)
 - [Final Project](https://chanyayun.github.io/Data-Science-Programming/Week3/final_project.html)
 unable to render html(cannot allocate vector of size)
 ### Problems Encountered
@@ -31,3 +31,6 @@ unable to render html(cannot allocate vector of size)
 - dirsource [*](https://www.rdocumentation.org/packages/tm/versions/0.7-6/topics/DirSource)
 - remove special characters [*](https://stackoverflow.com/questions/10294284/remove-all-special-characters-from-a-string-in-r)
 - bag of words [*](https://rpubs.com/williamsurles/316682)
+- as.matrix() [*](https://blog.csdn.net/stat_elliott/article/details/42458487)
+- removeSparseTerms() [*](https://stackoverflow.com/questions/28763389/how-does-the-removesparseterms-in-r-work)
+
